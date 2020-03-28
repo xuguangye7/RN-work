@@ -23,7 +23,7 @@ export default class Zhuce extends Component {
         // myFetch.get('/topics',{limit:4,user:'sss'})
         //     .then(res=>console.log(res))
         this.setState({iszhuceing:true})
-        myFetch.post('/login',{
+        myFetch.post('/zhuce',{
             username:this.state.username,
             pwd:this.state.pwd}
         ).then(res=>{
