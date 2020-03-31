@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image, TextInput, AsyncStorage, TouchableOpacity} from 'react-native';
+import {View, Text, Image, ActivityIndicator,ToastAndroid, TextInput, AsyncStorage, TouchableOpacity, Alert} from 'react-native';
 // import { Icon } from '@ant-design/react-native';
 import {myFetch} from '../utils'
 import { Actions } from 'react-native-router-flux';
@@ -20,23 +20,27 @@ export default class Login extends Component {
         this.setState({pwd:text})
     }
     login = ()=>{
-        // myFetch.get('/topics',{limit:4,user:'sss'})
-        //     .then(res=>console.log(res))
+      if(this.state.username != '' && this.state.pwd != ''){
         this.setState({isloading:true})
         myFetch.post('/login',{
             username:this.state.username,
             pwd:this.state.pwd}
         ).then(res=>{
-            // 根据返回状态进行判断，正确时跳转首页
-            // if(res){
-
-            // }
+          if(res.data.num == '1'){
+            this.setState({isloading:false})
+            ToastAndroid.show('账户已存在!', ToastAndroid.TOP);
+          }else{
             AsyncStorage.setItem('user',JSON.stringify(res.data))
                 .then(()=>{
                     this.setState({isloading:false})
-                    Actions.homePage();
+                    Actions.homePage();  
                 })
+          }
+            
         })
+      }else{
+        ToastAndroid.show('输入不能为空!', ToastAndroid.TOP);
+      }
     } 
   render() {
     return (
@@ -88,6 +92,8 @@ export default class Login extends Component {
               }}
               onPress={this.login}>
               <Text>登录</Text>
+      
+                
           </TouchableOpacity>
           <TouchableOpacity 
               style={{
@@ -118,6 +124,7 @@ export default class Login extends Component {
               <Text>正在登录中</Text>
             </View>
             :null
+            
         }
       </View>
     );

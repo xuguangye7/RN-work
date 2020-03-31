@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Image, TextInput, AsyncStorage, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TextInput, AsyncStorage, TouchableOpacity, ToastAndroid} from 'react-native';
 // import { Icon } from '@ant-design/react-native';
 import {myFetch} from '../utils'
 import { Actions } from 'react-native-router-flux';
@@ -27,14 +27,15 @@ export default class Zhuce extends Component {
             username:this.state.username,
             pwd:this.state.pwd}
         ).then(res=>{
-            // 根据返回状态进行判断，正确时跳转首页
-            // if(res){
-
-            // }
             AsyncStorage.setItem('user',JSON.stringify(res.data))
                 .then(()=>{
+                  if(res.data.token=='222'){
+                    ToastAndroid.show(res.data.tips,10);
+                  }else if(res.data.token=='111'){
+                    ToastAndroid.show('注册成功',10);
                     this.setState({iszhuceing:false})
                     Actions.login();
+                  }
                 })
         })
     } 
